@@ -34,6 +34,7 @@ public abstract class PointI
 		return true;
 	}
 	
+	
 	int[] cloneValues() {
 		return v.clone();		
 	}
