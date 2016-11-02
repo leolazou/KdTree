@@ -108,6 +108,12 @@ public class KdTree<Point extends PointI>
 	void delete(Point p) {
 		assert(false);
 	}
+	
+	// compare deux points par rapport à une direction (1 = x, 2 = y, ...)
+	
+	public boolean comparateur (PointI p1, PointI p2, int direction) {
+		return(p1.v[direction] < p2.v[direction]);
+	}
 
 	///////////////////////
 	/// Query Functions ///
