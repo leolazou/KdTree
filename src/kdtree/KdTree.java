@@ -59,11 +59,22 @@ public class KdTree<Point extends PointI>
 	/** Initialize the kd-tree from the input point set
 	 *  The input dimension should match the one of the points
 	 */
-	KdTree(int dim, ArrayList<Point> points, int max_depth) {
+	/*KdTree(int dim, ArrayList<Point> points, int max_depth) {
 		this.dim_ = dim;
 		this.n_points_ = points.size();
 		
 		//TODO: replace by a balanced initialization
+		this.n_points_=0;
+		for(Point p : points) {
+			insert(p);
+		}
+	
+	}*/
+	
+	KdTree(int dim, ArrayList<Point> points, int max_depth) {
+		this.dim_ = dim;
+		this.n_points_ = points.size();
+		points = sort(points, comparateur);		
 		this.n_points_=0;
 		for(Point p : points) {
 			insert(p);
@@ -111,9 +122,17 @@ public class KdTree<Point extends PointI>
 	
 	// compare deux points par rapport à une direction (1 = x, 2 = y, ...)
 	
-	public boolean comparateur (PointI p1, PointI p2, int direction) {
-		return(p1.v[direction] < p2.v[direction]);
+	public int comparateur (PointI p1, PointI p2, int direction) {
+		if (p1.v[direction] < p2.v[direction]) {
+			return 1 ;
+		} else if (p1.v[direction] == p2.v[direction]) {
+			return 0 ;
+		} else {
+			return -1 ;
+		}
 	}
+	
+	
 
 	///////////////////////
 	/// Query Functions ///
