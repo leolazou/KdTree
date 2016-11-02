@@ -71,13 +71,15 @@ public class KdTree<Point extends PointI>
 	
 	}*/
 	
-	KdTree(int dim, ArrayList<Point> points, int max_depth) {
-		this.dim_ = dim;
-		this.n_points_ = points.size();
-		points = sort(points, comparateur);		
-		this.n_points_=0;
-		for(Point p : points) {
-			insert(p);
+	private KdNode build (ArrayList<Point> points, int depth) {
+		points.sort(PointI a, PointI b) -> a.get(0)-b.get(0);	
+		int n = points.size()/2;
+		ArrayList<PointI> l = ArrayList<PointI> (points.sublist(0,n));
+		ArrayList<PointI> r = ArrayList<PointI> (points.sublist(n+1,points.size()));
+		KdNode node = new KdNode(points.get(n),depth);
+		node.child_left_ = build(l,depth+1);
+		node.child_right_ = build(r,depth+1);
+		
 		}
 	
 	}
