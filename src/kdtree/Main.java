@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
 public class Main 
-{		
+{
 	public static void main(String[] args)
     {
         System.out.println("Entrer le nom de l'image à charger :");

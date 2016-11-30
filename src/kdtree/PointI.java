@@ -34,11 +34,11 @@ public abstract class PointI
 		return true;
 	}
 	
-	
 	int[] cloneValues() {
 		return v.clone();		
 	}
 	
 	// this method should be static but that's not possible in Java...
 	public abstract PointI zero();
+	
 }

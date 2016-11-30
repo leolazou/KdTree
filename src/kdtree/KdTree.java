@@ -1,6 +1,8 @@
 package kdtree;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.lang.Math;
 
 public class KdTree<Point extends PointI>
 {
@@ -59,30 +61,74 @@ public class KdTree<Point extends PointI>
 	/** Initialize the kd-tree from the input point set
 	 *  The input dimension should match the one of the points
 	 */
-	/*KdTree(int dim, ArrayList<Point> points, int max_depth) {
+	KdTree(int dim, ArrayList<Point> points, int max_depth, int dimension) {
 		this.dim_ = dim;
 		this.n_points_ = points.size();
-		
+		build(dim, points, max_depth, dimension);
+	}	
 		//TODO: replace by a balanced initialization
-		this.n_points_=0;
-		for(Point p : points) {
-			insert(p);
+	private KdTree build(int dim, ArrayList<Point> points, int max_depth,int dimension){
+		if (!points.isEmpty()){
+			if (max_depth!=0){
+				ArrayList<Integer> tri_point = new ArrayList<Integer>();
+				for(int i = 0; i< points.size(); i++) {
+					tri_point.add(i, (points.get(i)).get(dim));
+				}
+				ArrayList<Integer> memoire_point = tri_point;
+				//memoire_point va servir à garder en mémoire les points sous la forme de leur coordonnée selon dim
+				Collections.sort(tri_point);
+				int mediane = tri_point.get(((tri_point.size())/2)+1);
+				
+				// Maintenant que l'on a trouvé le point median, on l'insère en premier dans l'arbre
+				this.insert(points.get(memoire_point.indexOf(mediane)));
+				ArrayList<Point> points_petit = points;
+				ArrayList<Point> points_grand = points;
+				for (int i = ((tri_point.size())/2); i>-1; i--){
+					points_grand.remove(memoire_point.indexOf(tri_point.get(i)));
+				}
+				for (int i = ((tri_point.size())/2)+2; i<tri_point.size(); i++){
+					points_petit.get(memoire_point.indexOf(tri_point.get(i)));
+				}
+			
+				/* On parcourt maintenant tri_point dans les 2 sens pour insérer les points suivants dans l'arbre
+				en prenant à chaque fois la médiane
+				On s'assure également de changer de dimension à chaque fois afin d'utiliser une meilleure
+				heuristique pour la dimension de coupe*/
+				this.build((dim+1)%dimension, points_petit , max_depth-1, dimension);
+				this.build((dim+1)%dimension, points_grand , max_depth-1, dimension);
+			}
+			// On prend maintenant en compte la profondeur maximale de l'arbre
+			else {
+				ArrayList<Integer> tri_point = new ArrayList<Integer>();
+				int bary[] = {};
+				for (int j = 1; j<dimension+1; j++){
+					for(int i = 0; i< points.size(); i++) {
+						tri_point.add(i, (points.get(i)).get(j));
+						bary[j]+= tri_point.get(i);
+					}
+					bary[j]=bary[j]/tri_point.size();
+				}
+				if (dimension==2){
+					Point g = (Point) new Point2i (bary[0], bary[1]);
+					this.insert(g);
+				}
+				else {
+					Point g = (Point) new Point3i (bary[0], bary[1], bary[2]);
+					this.insert(g);
+				}
+			}
+			
 		}
-	
-	}*/
-	
-	private KdNode build (ArrayList<Point> points, int depth) {
-		points.sort(PointI a, PointI b) -> a.get(0)-b.get(0);	
-		int n = points.size()/2;
-		ArrayList<PointI> l = ArrayList<PointI> (points.sublist(0,n));
-		ArrayList<PointI> r = ArrayList<PointI> (points.sublist(n+1,points.size()));
-		KdNode node = new KdNode(points.get(n),depth);
-		node.child_left_ = build(l,depth+1);
-		node.child_right_ = build(r,depth+1);
-		
-		}
-	
+		return (this);
 	}
+		/*for (int i = ((tri_point.size())/2); i>-1; i--){
+			this.insert(points.get(memoire_point.indexOf(tri_point.get(i))));
+		}
+		for (int i = ((tri_point.size())/2)+2; i<tri_point.size(); i++){
+			this.insert(points.get(memoire_point.indexOf(tri_point.get(i))));
+		}*/
+	
+	
 	  
 	/////////////////
 	/// Accessors ///
@@ -121,20 +167,6 @@ public class KdTree<Point extends PointI>
 	void delete(Point p) {
 		assert(false);
 	}
-	
-	// compare deux points par rapport Ã  une direction (1 = x, 2 = y, ...)
-	
-	public int comparateur (PointI p1, PointI p2, int direction) {
-		if (p1.v[direction] < p2.v[direction]) {
-			return 1 ;
-		} else if (p1.v[direction] == p2.v[direction]) {
-			return 0 ;
-		} else {
-			return -1 ;
-		}
-	}
-	
-	
 
 	///////////////////////
 	/// Query Functions ///
